@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani&display=swap");
+
+:root {
+  --default-container-width: 95vw;
+  --default-container-max-width: 2260px;
+}
+
+body {
+  background-color: #222;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: "Rajdhani", "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+@media (min-width: 768px) {
+  .mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 1140px) {
+  .xl {
+    display: none;
+  }
+
+  .x-col.two {
+    justify-content: right;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop {
+    display: none;
+  }
+}
+
+.x-page-container {
+  padding-top: 60px;
+}
+
+.component div {
+  font-size: 1rem;
+}
+
+/* WOIRPQOPRIJQWOPRIQ */
+
+/* Row */
+
+.x-content-container {
+  width: var(--default-container-width);
+  max-width: var(--default-container-max-width);
+}
+
+@media (min-width: 768px) {
+  .flex-row {
+    /* grid-template-columns: 70% auto; */
+    align-items: start;
+    display: flex;
+  }
+}
+
+/* OIQPRQWPOJIRQWPÅOJROPJQRWOPQRWOPJ */
+
+.x-section {
+  display: grid !important;
+  justify-content: center;
+}
+
+.x-content-container {
+  display: grid !important;
+  grid-auto-flow: row;
+}
+
+/* Flex */
+.flex-row {
+  display: flex;
+}
+
+main .flex-row {
+  flex-direction: column;
+}
+
+main .flex-col {
+}
+.flex-col {
+  display: flex;
+  place-self: stretch;
+}
+
+@media (min-width: 768px) {
+  main .flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  main .flex-col {
+    width: 100%;
+  }
+}
+
+/* Grid */
+
+.grid-row {
+  display: grid;
+}
+
+main .grid-row {
+  grid-auto-flow: row;
+}
+
+.grid-col {
+  display: grid;
+}
+
+@media (min-width: 768px) {
+  .grid-row {
+    display: grid;
+    grid-auto-flow: column;
+  }
+
+  .grid-col {
+    grid-auto-flow: column;
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "spreadsheet-wizard",
+  "version": "0.0.5",
+  "description": "Spreadsheet Wizard is a magnificient tool that help you EXPORT & IMPORT spreadsheets. A fantastic bridge between Sanity & your spreadsheet software of choice. (Google Sheets... Excel... Numbers etc.)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Sanity",
+    "Spreadsheet",
+    "CSV",
+    "TSV",
+    "Sheet",
+    "Google Sheet",
+    "Excel"
+  ],
+  "author": "Frikk Jarl & Suman Chapai",
+  "license": "ISC"
+}
