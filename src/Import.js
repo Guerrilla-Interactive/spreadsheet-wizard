@@ -26,13 +26,14 @@ const Import = ({ handleScreenChange }) => {
 
 function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
   // Remove empty lines & objects without ids
-  arrayOfObjects = arrayOfObjects.filter((item) => !!item._id);
+  // arrayOfObjects = arrayOfObjects.filter((item) => !!item._id);
   setProcessing("...uploading...");
   setSuccess("");
   setError("");
   return Promise.all(
     arrayOfObjects.map((object) => {
-      return client.createOrReplace(object);
+      // return client.createOrReplace(object);
+      return client.patch(object._id).set(object).commit().then(thing => console.log(thing)).catch(e => console.log('eer', e))
     })
   )
     .then((msg) => {
