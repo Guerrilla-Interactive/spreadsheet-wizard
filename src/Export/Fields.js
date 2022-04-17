@@ -30,6 +30,7 @@ export const MetaTypes = ({ metaTypes, setMetaTypes }) => {
             type="checkbox"
             checked={metaTypes.includes(item.name)}
             onChange={handleChange}
+            style = {{opacity: item.reqiured? "0.4": "1"}}
           />
           <label htmlFor={item.name}>{item.name}</label>
         </span>
@@ -104,6 +105,7 @@ export const FieldName = ({
           name={name}
           id={name}
           checked={ACCEPTED_TYPES.includes(type) ? selectedFields.map((thing) => thing.name).includes(name) : false}
+          style={{ opacity: ACCEPTED_TYPES.includes(type) ? "1" : "0.4"}}
           type="checkbox"
           onChange={handleChange}
         />
