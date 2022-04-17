@@ -49,7 +49,7 @@ const Screen = () => {
 
     return (
         <>
-            <LeftPanel handleScreenChange={handleScreenChange}>
+            <LeftPanel handleScreenChange={handleScreenChange} currentScreen={currentScreen.type}>
                 {renderSwitch(currentScreen)}
             </LeftPanel>
             <SpreadsheetView handleScreenChange={handleScreenChange}>
@@ -79,7 +79,7 @@ const Begin = ({ handleScreenChange }) => {
     );
 };
 
-const Navigation = ({ handleScreenChange }) => {
+const Navigation = ({ handleScreenChange, currentScreen }) => {
     const handleExport = () => handleScreenChange(screenTypes.EXPORT);
     const handleImport = () => handleScreenChange(screenTypes.IMPORT);
     return (
@@ -117,7 +117,7 @@ const Navigation = ({ handleScreenChange }) => {
     );
 };
 
-const LeftPanel = ({ handleScreenChange, children }) => {
+const LeftPanel = ({ handleScreenChange, children, currentScreen }) => {
     return (
         <>
             <Card
@@ -132,7 +132,7 @@ const LeftPanel = ({ handleScreenChange, children }) => {
                 display="grid"
                 padding={4}
             >
-                <Navigation handleScreenChange={handleScreenChange} />
+                <Navigation handleScreenChange={handleScreenChange} currentScreen={currentScreen} />
 
                 {children}
             </Card>
