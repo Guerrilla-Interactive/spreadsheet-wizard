@@ -1,5 +1,5 @@
 import React from "react";
-import { SANITY_META_TYPES } from "../constants.js";
+import { SANITY_META_TYPES, ACCEPTED_TYPES } from "../constants.js";
 
 import { Grid, Card, Checkbox, Text, Inline } from "@sanity/ui";
 
@@ -103,7 +103,7 @@ export const FieldName = ({
         <Checkbox
           name={name}
           id={name}
-          checked={selectedFields.map((thing) => thing.name).includes(name)}
+          checked={ACCEPTED_TYPES.includes(type) ? selectedFields.map((thing) => thing.name).includes(name) : false}
           type="checkbox"
           onChange={handleChange}
         />
