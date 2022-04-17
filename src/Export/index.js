@@ -7,7 +7,7 @@ import {
   CSV_TOOLS_DELIMETER,
 } from "../constants.js";
 import { download, schemeNames, csvFileFromObjects } from "../utils.js";
-import schemas from 'part:@sanity/base/schema'
+import schemas from "part:@sanity/base/schema";
 import { client } from "../CSVTools.js";
 import Layout from "../Layout.js";
 import { useDocsData } from "../Context.js";
@@ -36,7 +36,7 @@ const CSVExport = () => {
     }
   }
   const [metaTypes, setMetaTypes] = useState(
-    SANITY_META_TYPES.filter((thing) => thing.reqiured).map((item) => item.name)
+    SANITY_META_TYPES.filter((thing) => thing.required).map((item) => item.name)
   );
   const [doc, setDoc] = useState("");
   const [fields, setFields] = useState([]);

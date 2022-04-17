@@ -13,7 +13,7 @@ export const MetaTypes = ({ metaTypes, setMetaTypes }) => {
             (item) =>
               item !== metaName ||
               SANITY_META_TYPES.filter((thing) => thing.name === metaName)[0]
-                .reqiured
+                .required
           )
         : [...metaTypes, metaName]
     );
@@ -22,7 +22,7 @@ export const MetaTypes = ({ metaTypes, setMetaTypes }) => {
   return (
     <Inline space="3">
       {SANITY_META_TYPES.map((item) => (
-        <span key={item.name}>
+        <span style={{ opacity: item.required ? "0.4" : "1" }} key={item.name}>
           <Checkbox
             padding={5}
             name={item.name}
@@ -30,7 +30,6 @@ export const MetaTypes = ({ metaTypes, setMetaTypes }) => {
             type="checkbox"
             checked={metaTypes.includes(item.name)}
             onChange={handleChange}
-            style = {{opacity: item.reqiured? "0.4": "1"}}
           />
           <label htmlFor={item.name}>{item.name}</label>
         </span>
@@ -95,7 +94,11 @@ export const FieldName = ({
   }
   return (
     <Grid
-      style={{ borderTop: "1px solid #ddd", gridTemplateColumns: "1fr 30%" }}
+      style={{
+        opacity: ACCEPTED_TYPES.includes(type) ? "1" : "0.4",
+        borderTop: "1px solid #ddd",
+        gridTemplateColumns: "1fr 30%",
+      }}
       gap={3}
       paddingBottom={2}
       paddingTop={2}
@@ -104,8 +107,11 @@ export const FieldName = ({
         <Checkbox
           name={name}
           id={name}
-          checked={ACCEPTED_TYPES.includes(type) ? selectedFields.map((thing) => thing.name).includes(name) : false}
-          style={{ opacity: ACCEPTED_TYPES.includes(type) ? "1" : "0.4"}}
+          checked={
+            ACCEPTED_TYPES.includes(type)
+              ? selectedFields.map((thing) => thing.name).includes(name)
+              : false
+          }
           type="checkbox"
           onChange={handleChange}
         />
