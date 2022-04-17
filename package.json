@@ -37,6 +37,6 @@
     "devDependencies": {
         "@sanity/base": "^2.29.5",
         "@sanity/client": "^3.3.0",
-        "sanipack": "2.0.1"
+        "sanipack": "2.1.0"
     }
 }
