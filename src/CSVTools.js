@@ -192,7 +192,8 @@ const SpreadsheetView = ({ handleScreenChange, children }) => {
         style={{
           width: "100%",
           overflowX: "scroll",
-          background: "linear-gradient(to right, #c9d6ff, #e2e2e2)",
+          background:
+            "linear-gradient(to right, rgb(251 251 251 / 54%), rgb(226, 226, 226))",
         }}
         display="grid"
         padding={4}
