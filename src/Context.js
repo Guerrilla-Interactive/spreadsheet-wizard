@@ -21,7 +21,6 @@ const DocsDataProvider = ({ children }) => {
 const useDocsData = () => {
     const { values, setValues } = useContext(docsDataContext);
     function handleChange(newValue) {
-        console.log("trying to add", newValue);
         //
         // newValue is supposed to be {doc: 'XXX', value: 'YYY'}
         // where XXX is the doc name and YYY is the value of things in that doc

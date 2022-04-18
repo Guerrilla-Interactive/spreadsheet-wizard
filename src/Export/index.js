@@ -5,7 +5,7 @@ import {
     screenTypes,
     CSV_TOOLS_DELIMETER,
 } from "../constants.js";
-import { download, schemeNames, csvFileFromObjects } from "../utils.js";
+import { download, schemeNames, csvFileFromObjects, makeClipboardCompatible, fieldsAndDataProcessed } from "../utils.js";
 import schemas from "part:@sanity/base/schema";
 import { client } from "../CSVTools.js";
 import Layout from "../Layout.js";
@@ -16,6 +16,7 @@ import PreviewData from "./PreviewData.js";
 
 import { Heading, Stack, Select, Button } from "@sanity/ui";
 import { ArrowLeft, DownloadSimple } from "phosphor-react";
+import {DataTable} from './PreviewData.js'
 
 const Export = ({ handleScreenChange }) => {
     return <CSVExport />;
@@ -34,6 +35,13 @@ const CSVExport = () => {
             csvFileFromObjects(myData, selectedFields, metaTypes, doc, fields);
         }
     }
+
+    function handleCopy(){
+        navigator.clipboard.writeText(
+            makeClipboardCompatible(fieldsAndDataProcessed(myData, selectedFields, metaTypes, fields)))
+    }
+
+
     const [metaTypes, setMetaTypes] = useState(
         SANITY_META_TYPES.filter((thing) => thing.required).map(
             (item) => item.name
@@ -96,8 +104,18 @@ const CSVExport = () => {
                         <Button
                             style={{}}
                             icon={DownloadSimple}
-                            onClick={handleClick}
+                            onClick={handleCopy}
                             text="Download as TSV"
+                            tone="positive"
+                            mode="ghost"
+                            padding={4}
+                            disabled={!myData}
+                        />
+                        <Button
+                            style={{}}
+                            icon={DownloadSimple}
+                            onClick={handleCopy}
+                            text="Copy to Clipboard"
                             tone="positive"
                             mode="ghost"
                             padding={4}
@@ -162,4 +180,5 @@ const ChooseDocument = ({
     );
 };
 
+export {DataTable}
 export default Export;

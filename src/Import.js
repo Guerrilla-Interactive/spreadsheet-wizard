@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { screenTypes, CSV_TOOLS_DELIMETER, ACCEPTED_TYPES } from "./constants.js";
+import ReactDOM from "react-dom";
+import {
+    screenTypes,
+    CSV_TOOLS_DELIMETER,
+    ACCEPTED_TYPES,
+    SANITY_META_TYPES,
+} from "./constants.js";
+import { fieldsAndDataProcessed } from "./utils.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
 import { Heading, Stack, Select, Button } from "@sanity/ui";
 import { UploadSimple } from "phosphor-react";
+import { DataTable } from "./Export";
 
 const Import = ({ handleScreenChange }) => {
     return (
@@ -44,9 +52,11 @@ function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
                         client
                             .createIfNotExists(object)
                             .then((t) => (numberOfSuccesses += 1))
-                            .catch((e) => { 
-                                console.log('if you are trying to create new docs by specifying ids manually, make sure you are providing type as well')
-                                console.log(e) 
+                            .catch((e) => {
+                                console.log(
+                                    "if you are trying to create new docs by specifying ids manually, make sure you are providing type as well"
+                                );
+                                console.log(e);
                             });
                     } else {
                         console.log(
@@ -83,14 +93,16 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
         thing.replace("\r", "").replace("\n", "").replace("\r\n", "")
     );
     const heading = linesOfStrings[0].split(CSV_TOOLS_DELIMETER);
-    function makeObject(index, myValue){
-        const thing = ACCEPTED_TYPES.find(x => x.name === heading[index])
-        if (thing?.query){
-            const {value, ...other} = {...thing.structure, [thing.structure.value.name]: myValue}
-            return {[thing.name]: other}
-        }
-        else{
-            return {[heading[index]]: myValue}
+    function makeObject(index, myValue) {
+        const thing = ACCEPTED_TYPES.find((x) => x.name === heading[index]);
+        if (thing?.query) {
+            const { value, ...other } = {
+                ...thing.structure,
+                [thing.structure.value.name]: myValue,
+            };
+            return { [thing.name]: other };
+        } else {
+            return { [heading[index]]: myValue };
         }
     }
     // Check if heading contains ID
@@ -101,7 +113,7 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                 return thing.reduce(
                     (prev, current, index) => ({
                         ...prev,
-                        ...makeObject(index, current)
+                        ...makeObject(index, current),
                     }),
                     {}
                 );
@@ -113,35 +125,72 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
 }
 
 const ImportForm = () => {
-    const [fileContent, setFileContent] = useState("");
     const [error, setError] = useState("");
     const [processing, setProcessing] = useState("");
     const [success, setSuccess] = useState("");
-    function handleFile(e) {
-        setFile(e.target.value);
+    const [myData, setMyData] = useState(null);
+
+    function readFromInputFile(onRead) {
+        const file = document.querySelector("#csvFile").files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => onRead(e);
+        reader.readAsText(file, "utf-8");
     }
-    function successCallBack(data) {
+
+    function handleFile(e) {
+        if (e.target.value) {
+            readFromInputFile((e) =>
+                processCSVLines(
+                    e.target.result.split("\n"),
+                    (data) => setMyData(processAndSetMyData(data)),
+                    setError
+                )
+            );
+        }
+    }
+    function upload(data) {
         uploadToSanity(data, setProcessing, setError, setSuccess);
     }
-    function handleImport(e) {
-        // Don't Reload
-        e.preventDefault();
+    function processAndSetMyData(data) {
+        const metaTypes = SANITY_META_TYPES.filter(
+            (thing) => thing.required
+        ).map((x) => x.name);
+        const allHeadings = data
+            .reduce((prev, curr) => [...prev, ...Object.keys(curr)], [])
+            .filter(x => !metaTypes.includes(x))
+            .reduce((prev, curr) => prev.includes(curr) ? prev : [...prev, curr], [])
+        const headingsWithTypes = allHeadings.map(x => ({name: x, type: 'string'}))
+        return fieldsAndDataProcessed(
+            data,
+            headingsWithTypes,
+            metaTypes,
+            headingsWithTypes
+        );
+    }
 
-        const file = document.querySelector("#csvFile").files[0];
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
+    async function handlePaste() {
+        const text = await navigator.clipboard
+            .readText()
+            .then((data) => data?.split("\n"));
+        if (text) {
             processCSVLines(
-                e.target.result.split("\n"),
-                successCallBack,
+                text,
+                (data) => setMyData(processAndSetMyData(data)),
                 setError
             );
-        };
-        reader.readAsText(file, "utf-8");
+        }
+    }
+    function handleUpload(e) {
+        // handleUpload
+        if (myData) {
+            upload(myData);
+        } else {
+            setError("No Data");
+        }
     }
     return (
         <>
-            <form onSubmit={handleImport}>
+            <form>
                 {error ? <p> Error: {error} </p> : null}
                 {processing ? <p> {processing} </p> : null}
                 {success ? <p> {success} </p> : null}
@@ -154,22 +203,37 @@ const ImportForm = () => {
                         name="file"
                         type="file"
                         accept=".tsv"
+                        onChange={handleFile}
                     />
                 </div>
-
                 <Button
                     style={{ marginTop: "1.5rem", width: "100%" }}
                     icon={UploadSimple}
-                    type="submit"
+                    onClick={handleUpload}
                     text="Import '.tsv' file"
                     tone="positive"
                     mode="ghost"
+                    disabled={!myData}
                     padding={4}
                 />
+                <Button
+                    style={{ marginTop: "1.5rem", width: "100%" }}
+                    icon={UploadSimple}
+                    text="Pate from clipboard"
+                    tone="positive"
+                    mode="ghost"
+                    onClick={handlePaste}
+                    padding={4}
+                />
+                <DataTableWrapper data={myData} />
             </form>
-            <p>{fileContent}</p>
         </>
     );
 };
-
+const DataTableWrapper = ({ data }) => {
+    return ReactDOM.createPortal(
+        <div>{data ? <DataTable data={data} /> : null}</div>,
+        document.getElementById("spreadsheet")
+    );
+};
 export default Import;
