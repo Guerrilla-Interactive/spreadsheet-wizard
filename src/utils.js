@@ -92,3 +92,7 @@ export function getValue(item, heading){
         return item[ACCEPTED_TYPES.find(x => x.name === heading).query]
     }
 }
+
+export function makeClipboardCompatible(data){
+    return data.map(thing => thing.join('\t')).join('\n')
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useDocsData } from "../Context.js";
 import { client } from "../CSVTools.js";
-import { fieldsAndDataProcessed, getValue } from "../utils.js";
+import { fieldsAndDataProcessed, getValue, makeClipboardCompatible } from "../utils.js";
 import { Container, Card, Grid, Flex, Stack, Inline, Button } from "@sanity/ui";
 
 export default function PreviewData({
@@ -54,7 +54,11 @@ export default function PreviewData({
 
 const Loading = () => <p>...loading </p>;
 
-const DataTable = ({ data }) => (
+const DataTable = ({ data }) => {
+    function handleCopy(){
+        navigator.clipboard.writeText(makeClipboardCompatible(data))
+    }
+    return(
   <Grid
     id="spreadsheet-table"
     style={{
@@ -69,6 +73,7 @@ const DataTable = ({ data }) => (
       overflow: "hidden",
     }}
   >
+    <button onClick={handleCopy}>Copy to Clipboard</button>
     {data?.length > 0 && (
       <Grid
         id="spreadsheet-head"
@@ -144,7 +149,7 @@ const DataTable = ({ data }) => (
       </Grid>
     )}
   </Grid>
-);
+)};
 
 function fetchData(doc, callBackOnSuccess, callBackOnFailure) {
   const query = `*[_type == '${doc}']`;
