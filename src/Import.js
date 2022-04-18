@@ -33,7 +33,12 @@ function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
   return Promise.all(
     arrayOfObjects.map((object) => {
       // return client.createOrReplace(object);
-      return client.patch(object._id).set(object).commit().then(thing => console.log(thing)).catch(e => console.log('eer', e))
+      return client
+        .patch(object._id)
+        .set(object)
+        .commit()
+        .then((thing) => console.log(thing))
+        .catch((e) => console.log("eer", e));
     })
   )
     .then((msg) => {
@@ -119,7 +124,7 @@ const ImportForm = () => {
           icon={UploadSimple}
           type="submit"
           text="Import '.tsv' file"
-          fontSize={1}
+          tone="positive"
           mode="ghost"
           padding={4}
         />

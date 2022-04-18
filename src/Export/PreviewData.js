@@ -5,7 +5,12 @@ import { client } from "../CSVTools.js";
 import { fieldsAndDataProcessed } from "../utils.js";
 import { Container, Card, Grid, Flex, Stack, Inline, Button } from "@sanity/ui";
 
-export default function PreviewData({ doc, selectedFields, metaTypes, allFields }) {
+export default function PreviewData({
+  doc,
+  selectedFields,
+  metaTypes,
+  allFields,
+}) {
   const [allDocs, setAllDocsData] = useDocsData();
   const [isAvailable, setIsAvailable] = useState(false);
 
@@ -56,6 +61,10 @@ const DataTable = ({ data }) => (
       cursor: "cell",
       display: "grid",
       width: "max-content",
+      padding: "0px",
+      borderTopLeftRadius: "5px",
+      borderTopRightRadius: "5px",
+      overflow: "hidden",
     }}
   >
     {data?.length > 0 && (
@@ -81,9 +90,9 @@ const DataTable = ({ data }) => (
                 padding: "15px",
                 overflowX: "hidden",
                 overflowY: "hidden",
-                background: "#ddd",
+                background: "#f7f7f7",
               }}
-              key={thing + '' + index}
+              key={thing + "" + index}
             >
               <div
                 style={{ display: "grid", width: "120px", maxWidth: "120px" }}
@@ -111,12 +120,18 @@ const DataTable = ({ data }) => (
                   padding: "15px",
                   overflowX: "hidden",
                   overflowY: "hidden",
-                  background: "#eee",
+                  background: "#ffffff",
+                  whiteSpace: "nowrap",
                 }}
-                key={'' + item + index}
+                key={"" + item + index}
               >
                 <div
-                  style={{ display: "grid", width: "120px", maxWidth: "120px" }}
+                  style={{
+                    color: "#555",
+                    display: "grid",
+                    width: "120px",
+                    maxWidth: "120px",
+                  }}
                 >
                   {item}
                 </div>

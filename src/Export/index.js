@@ -93,11 +93,11 @@ const CSVExport = () => {
         {doc ? (
           <>
             <Button
-              style={{ marginTop: "1.5rem" }}
+              style={{}}
               icon={DownloadSimple}
               onClick={handleClick}
               text="Download as TSV"
-              fontSize={1}
+              tone="positive"
               mode="ghost"
               padding={4}
               disabled={!myData}

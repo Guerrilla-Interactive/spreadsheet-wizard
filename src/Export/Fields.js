@@ -20,7 +20,7 @@ export const MetaTypes = ({ metaTypes, setMetaTypes }) => {
   }
 
   return (
-    <Inline space="3">
+    <Inline style={{ display: "none" }} space="3">
       {SANITY_META_TYPES.map((item) => (
         <span style={{ opacity: item.required ? "0.4" : "1" }} key={item.name}>
           <Checkbox
@@ -53,6 +53,7 @@ export const FieldTypes = ({
         background: "#f9f9f9",
         marginBottom: "1rem",
         textAlign: "left",
+        overflow: "hidden",
       }}
     >
       <Grid

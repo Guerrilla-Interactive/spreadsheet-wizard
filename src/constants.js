@@ -13,6 +13,7 @@ export const SANITY_META_TYPES = [
   },
   {
     name: "_type",
+    required: true,
   },
   {
     name: "_updatedAt",
