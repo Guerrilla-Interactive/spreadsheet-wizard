@@ -104,7 +104,7 @@ const CSVExport = () => {
                         <Button
                             style={{}}
                             icon={DownloadSimple}
-                            onClick={handleCopy}
+                            onClick={handleClick}
                             text="Download as TSV"
                             tone="positive"
                             mode="ghost"
