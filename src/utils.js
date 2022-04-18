@@ -66,7 +66,7 @@ export function csvFileFromObjects(
     data.forEach((dataItem) =>
         myFileData.push(
             headings
-                .map((heading) => dataItem[heading] || " ")
+                .map((heading) => getValue(dataItem[heading], heading) || " ")
                 .join(CSV_TOOLS_DELIMETER)
         )
     );
@@ -78,11 +78,16 @@ export function fieldsAndDataProcessed(data, fields, metaTypes, allFields) {
     const headings = headingsSorted(metaTypes, fields, allFields);
     let myFileData = [headings];
     data.forEach((dataItem) =>
-        myFileData.push(headings.map((heading) => dataItem[heading] || " "))
+        myFileData.push(headings.map((heading) => getValue(dataItem[heading], heading) || " "))
     );
     return myFileData;
 }
 
-export function getValue(item){
-    return item[ACCEPTED_TYPES.filter(x => x.name === item._type)[0].query]
+export function getValue(item, heading){
+    if (!item || typeof item === 'string' || typeof item === 'boolean'){
+        return item
+    }
+    else{
+        return item[ACCEPTED_TYPES.find(x => x.name === heading).query]
+    }
 }

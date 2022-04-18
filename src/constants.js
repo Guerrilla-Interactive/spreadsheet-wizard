@@ -5,7 +5,7 @@ export const ACCEPTED_TYPES = [
     { name: "text" },
     { name: "date" },
     { name: "datetime" },
-    { name: "slug", query: "current" },
+    { name: "slug", query: "current", structure: {type: '_slug', value: {name: 'current'}}},
 ];
 
 export const SANITY_META_TYPES = [

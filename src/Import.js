@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { screenTypes, CSV_TOOLS_DELIMETER } from "./constants.js";
+import { screenTypes, CSV_TOOLS_DELIMETER, ACCEPTED_TYPES } from "./constants.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
 import { Heading, Stack, Select, Button } from "@sanity/ui";
@@ -83,6 +83,16 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
         thing.replace("\r", "").replace("\n", "").replace("\r\n", "")
     );
     const heading = linesOfStrings[0].split(CSV_TOOLS_DELIMETER);
+    function makeObject(index, myValue){
+        const thing = ACCEPTED_TYPES.find(x => x.name === heading[index])
+        if (thing?.query){
+            const {value, ...other} = {...thing.structure, [thing.structure.value.name]: myValue}
+            return {[thing.name]: other}
+        }
+        else{
+            return {[heading[index]]: myValue}
+        }
+    }
     // Check if heading contains ID
     if (heading.includes("_id")) {
         onSuccess(
@@ -91,7 +101,7 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                 return thing.reduce(
                     (prev, current, index) => ({
                         ...prev,
-                        [heading[index]]: current,
+                        ...makeObject(index, current)
                     }),
                     {}
                 );

@@ -135,7 +135,7 @@ const DataTable = ({ data }) => (
                     maxWidth: "120px",
                   }}
                 >
-                  {typeof item === 'string' ? item : getValue(item)} 
+                  {item} 
                 </div>
               </div>
             ))}
