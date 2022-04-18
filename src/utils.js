@@ -77,19 +77,21 @@ export function csvFileFromObjects(
 export function fieldsAndDataProcessed(data, fields, metaTypes, allFields) {
     const headings = headingsSorted(metaTypes, fields, allFields);
     let myFileData = [headings];
-    data.forEach((dataItem) =>
-        myFileData.push(headings.map((heading) => getValue(dataItem[heading], heading) || " "))
+    data.forEach((dataItem, index) =>
+        myFileData.push(headings.map((heading) => getValue(dataItem[heading], heading, allFields.find(x => x.name === heading)?.type || 'string') || " "))
     );
     return myFileData;
 }
 
-export function getValue(item, heading){
+export function getValue(item, heading, myType){
     const displayAsIs = ['string', 'boolean', 'number']
+    console.log('xxx', item, heading, myType)
     if (!item || displayAsIs.includes(typeof item)){
-        return item ? JSON.stringify(item, null, 2) : ''
+        return item ? 
+            ACCEPTED_TYPES?.find(x => x.name === myType)?.asJSON ? JSON.stringify(item) : item : ''
     }
     else{
-        return item[ACCEPTED_TYPES.find(x => x.name === heading).query]
+        return item[ACCEPTED_TYPES?.find(x => x.name === heading)?.query] || JSON.stringify(item)
     }
 }
 
