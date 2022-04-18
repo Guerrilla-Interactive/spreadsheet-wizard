@@ -84,7 +84,8 @@ export function fieldsAndDataProcessed(data, fields, metaTypes, allFields) {
 }
 
 export function getValue(item, heading){
-    if (!item || typeof item === 'string' || typeof item === 'boolean'){
+    const displayAsIs = ['string', 'boolean', 'number']
+    if (!item || displayAsIs.includes(typeof item)){
         return item
     }
     else{
