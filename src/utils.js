@@ -46,12 +46,11 @@ function headingsSorted(metaTypes, fields, allFields) {
         metaTypes.includes(thing)
     );
     const unsortedFieldNames = fields
-        .filter((field) => ACCEPTED_TYPES.includes(field.type))
+        .filter((field) => ACCEPTED_TYPES.map(x => x.name).includes(field.type))
         .map((field) => field.name);
     const sortedFieldNames = allFields
         .map((thing) => thing.name)
         .filter((thing) => unsortedFieldNames.includes(thing));
-    console.log("allfields", allFields);
     return [...sortedMetaNames, ...sortedFieldNames];
 }
 
@@ -76,11 +75,14 @@ export function csvFileFromObjects(
 }
 
 export function fieldsAndDataProcessed(data, fields, metaTypes, allFields) {
-    console.log("calling me");
     const headings = headingsSorted(metaTypes, fields, allFields);
     let myFileData = [headings];
     data.forEach((dataItem) =>
         myFileData.push(headings.map((heading) => dataItem[heading] || " "))
     );
     return myFileData;
+}
+
+export function getValue(item){
+    return item[ACCEPTED_TYPES.filter(x => x.name === item._type)[0].query]
 }

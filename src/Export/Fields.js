@@ -96,7 +96,7 @@ export const FieldName = ({
   return (
     <Grid
       style={{
-        opacity: ACCEPTED_TYPES.includes(type) ? "1" : "0.4",
+        opacity: ACCEPTED_TYPES.map(x => x.name).includes(type) ? "1" : "0.4",
         borderTop: "1px solid #ddd",
         gridTemplateColumns: "1fr 30%",
       }}
@@ -109,7 +109,7 @@ export const FieldName = ({
           name={name}
           id={name}
           checked={
-            ACCEPTED_TYPES.includes(type)
+            ACCEPTED_TYPES.map(x => x.name).includes(type)
               ? selectedFields.map((thing) => thing.name).includes(name)
               : false
           }

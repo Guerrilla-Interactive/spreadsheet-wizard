@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useDocsData } from "../Context.js";
 import { client } from "../CSVTools.js";
-import { fieldsAndDataProcessed } from "../utils.js";
+import { fieldsAndDataProcessed, getValue } from "../utils.js";
 import { Container, Card, Grid, Flex, Stack, Inline, Button } from "@sanity/ui";
 
 export default function PreviewData({
@@ -135,7 +135,7 @@ const DataTable = ({ data }) => (
                     maxWidth: "120px",
                   }}
                 >
-                  {item}
+                  {typeof item === 'string' ? item : getValue(item)} 
                 </div>
               </div>
             ))}

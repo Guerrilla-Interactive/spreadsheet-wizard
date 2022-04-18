@@ -1,29 +1,37 @@
-export const ACCEPTED_TYPES = ["string", "number", "boolean", "text"];
+export const ACCEPTED_TYPES = [
+    { name: "string" },
+    { name: "number" },
+    { name: "boolean" },
+    { name: "text" },
+    { name: "date" },
+    { name: "datetime" },
+    { name: "slug", query: "current" },
+];
 
 export const SANITY_META_TYPES = [
-  {
-    name: "_id",
-    required: true,
-  },
-  {
-    name: "_createdAt",
-  },
-  {
-    name: "_rev",
-  },
-  {
-    name: "_type",
-    required: true,
-  },
-  {
-    name: "_updatedAt",
-  },
+    {
+        name: "_id",
+        required: true,
+    },
+    {
+        name: "_createdAt",
+    },
+    {
+        name: "_rev",
+    },
+    {
+        name: "_type",
+        required: true,
+    },
+    {
+        name: "_updatedAt",
+    },
 ];
 
 export const screenTypes = {
-  BEGIN: "begin",
-  IMPORT: "import",
-  EXPORT: "export",
+    BEGIN: "begin",
+    IMPORT: "import",
+    EXPORT: "export",
 };
 
 export const CSV_TOOLS_DELIMETER = "\t";
