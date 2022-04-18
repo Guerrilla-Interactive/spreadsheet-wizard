@@ -2,7 +2,6 @@ export const ACCEPTED_TYPES = [
     { name: "string" },
     { name: "number" },
     { name: "boolean" },
-    { name: "text" },
     { name: "date" },
     { name: "datetime" },
     { name: "slug", query: "current", structure: {type: '_slug', value: {name: 'current'}}},
