@@ -86,7 +86,7 @@ export function fieldsAndDataProcessed(data, fields, metaTypes, allFields) {
 export function getValue(item, heading){
     const displayAsIs = ['string', 'boolean', 'number']
     if (!item || displayAsIs.includes(typeof item)){
-        return item ? String(item) : ''
+        return item ? JSON.stringify(item, null, 2) : ''
     }
     else{
         return item[ACCEPTED_TYPES.find(x => x.name === heading).query]

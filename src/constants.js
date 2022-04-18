@@ -4,6 +4,7 @@ export const ACCEPTED_TYPES = [
     { name: "boolean" },
     { name: "date" },
     { name: "datetime" },
+    { name: "text" },
     { name: "slug", query: "current", structure: {type: '_slug', value: {name: 'current'}}},
 ];
 
