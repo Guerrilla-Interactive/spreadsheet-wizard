@@ -23,13 +23,6 @@ const Export = ({ handleScreenChange }) => {
 };
 
 const CSVExport = () => {
-    // function handleClick() {
-    //     const query = `*[_type == '${doc}']`;
-    //     client.fetch(query).then((data) => {
-    //         csvFileFromObjects(data, selectedFields, metaTypes, doc);
-    //     });
-    // }
-
     function handleClick() {
         if (!!myData) {
             csvFileFromObjects(myData, selectedFields, metaTypes, doc, fields);

@@ -149,7 +149,11 @@ const ImportForm = () => {
         }
     }
     function upload(data) {
-        uploadToSanity(data, setProcessing, setError, setSuccess);
+        processCSVLines(
+            data.map((x) => x.join(CSV_TOOLS_DELIMETER)),
+            (data) => uploadToSanity(data, setProcessing, setError, setSuccess),
+            setError
+        );
     }
     function processAndSetMyData(data) {
         const metaTypes = SANITY_META_TYPES.filter(
@@ -157,9 +161,15 @@ const ImportForm = () => {
         ).map((x) => x.name);
         const allHeadings = data
             .reduce((prev, curr) => [...prev, ...Object.keys(curr)], [])
-            .filter(x => !metaTypes.includes(x))
-            .reduce((prev, curr) => prev.includes(curr) ? prev : [...prev, curr], [])
-        const headingsWithTypes = allHeadings.map(x => ({name: x, type: 'string'}))
+            .filter((x) => !metaTypes.includes(x))
+            .reduce(
+                (prev, curr) => (prev.includes(curr) ? prev : [...prev, curr]),
+                []
+            );
+        const headingsWithTypes = allHeadings.map((x) => ({
+            name: x,
+            type: "string",
+        }));
         return fieldsAndDataProcessed(
             data,
             headingsWithTypes,
@@ -183,6 +193,7 @@ const ImportForm = () => {
     function handleUpload(e) {
         // handleUpload
         if (myData) {
+            console.log("myData", myData);
             upload(myData);
         } else {
             setError("No Data");
@@ -210,7 +221,7 @@ const ImportForm = () => {
                     style={{ marginTop: "1.5rem", width: "100%" }}
                     icon={UploadSimple}
                     onClick={handleUpload}
-                    text="Import '.tsv' file"
+                    text="Submit"
                     tone="positive"
                     mode="ghost"
                     disabled={!myData}
