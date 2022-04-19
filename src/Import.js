@@ -6,7 +6,7 @@ import {
     ACCEPTED_TYPES,
     SANITY_META_TYPES,
 } from "./constants.js";
-import { fieldsAndDataProcessed } from "./utils.js";
+import { fieldsAndDataProcessed, isJsonString } from "./utils.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
 import { Heading, Stack, Select, Button } from "@sanity/ui";
@@ -102,7 +102,12 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
             };
             return { [thing.name]: other };
         } else {
-            return { [heading[index]]: myValue };
+            const thing = {
+                [heading[index]]: isJsonString(myValue)
+                    ?  JSON.parse(myValue)
+                    : myValue ? String(myValue): null,
+            };
+            return thing;
         }
     }
     // Check if heading contains ID
@@ -117,7 +122,7 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                     }),
                     {}
                 );
-            })
+            }).filter(item => !!item._id) // only take those rows with _id
         );
     } else {
         onFail("_id not provided!");
@@ -129,6 +134,7 @@ const ImportForm = () => {
     const [processing, setProcessing] = useState("");
     const [success, setSuccess] = useState("");
     const [myData, setMyData] = useState(null);
+    const [rawData, setRawData] = useState(null);
 
     function readFromInputFile(onRead) {
         const file = document.querySelector("#csvFile").files[0];
@@ -142,18 +148,14 @@ const ImportForm = () => {
             readFromInputFile((e) =>
                 processCSVLines(
                     e.target.result.split("\n"),
-                    (data) => setMyData(processAndSetMyData(data)),
+                    (data) => {
+                        setMyData(processAndSetMyData(data));
+                        setRawData(data);
+                    },
                     setError
                 )
             );
         }
-    }
-    function upload(data) {
-        processCSVLines(
-            data.map((x) => x.join(CSV_TOOLS_DELIMETER)),
-            (data) => uploadToSanity(data, setProcessing, setError, setSuccess),
-            setError
-        );
     }
     function processAndSetMyData(data) {
         const metaTypes = SANITY_META_TYPES.filter(
@@ -185,16 +187,20 @@ const ImportForm = () => {
         if (text) {
             processCSVLines(
                 text,
-                (data) => setMyData(processAndSetMyData(data)),
+                (data) => {
+                    console.log('datain pate', data)
+                    setMyData(processAndSetMyData(data))
+                    setRawData(data)
+                },
                 setError
             );
         }
     }
     function handleUpload(e) {
         // handleUpload
-        if (myData) {
-            console.log("myData", myData);
-            upload(myData);
+        if (rawData) {
+            console.log(rawData);
+            uploadToSanity(rawData, setProcessing, setError, setSuccess)
         } else {
             setError("No Data");
         }
