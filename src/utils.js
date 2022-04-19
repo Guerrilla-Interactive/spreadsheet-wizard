@@ -125,3 +125,7 @@ export function isJsonString(str) {
         return false;
     }
 }
+
+export function getEmptyValueFor(type){
+    return ACCEPTED_TYPES.find(x => x.name === type)?.empty || ''
+}

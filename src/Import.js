@@ -6,7 +6,7 @@ import {
     ACCEPTED_TYPES,
     SANITY_META_TYPES,
 } from "./constants.js";
-import { fieldsAndDataProcessed, isJsonString } from "./utils.js";
+import { fieldsAndDataProcessed, isJsonString, getEmptyValueFor } from "./utils.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
 import { Heading, Stack, Select, Button } from "@sanity/ui";
@@ -100,7 +100,7 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                 ...thing.structure,
                 [thing.structure.value.name]: myValue,
             };
-            return { [thing.name]: other };
+            return { [thing.name]: other};
         } else {
             const thing = {
                 [heading[index]]: isJsonString(myValue)

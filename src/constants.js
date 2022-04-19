@@ -1,12 +1,12 @@
 export const ACCEPTED_TYPES = [
     { name: "string" },
     { name: "number" },
-    { name: "boolean" },
+    { name: "boolean", empty: ''},
     { name: "date" },
-    { name: "datetime" },
-    { name: "text" },
-    { name: "array"},
-    { name: "image"},
+    { name: "datetime"},
+    { name: "text" , isJson: true, empty: ''},
+    { name: "array", isJson: true, empty: []},
+    { name: "image", isJson: true, empty: {}},
     { name: "slug", query: "current", structure: {type: '_slug', value: {name: 'current'}}},
 ];
 
