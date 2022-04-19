@@ -41,9 +41,11 @@ function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
     setError("");
     return Promise.all(
         arrayOfObjects.map((object) => {
+            const unsetFields = Object.keys(object).filter(key => object[key] === getEmptyValueFor(''))
             return client
                 .patch(object._id)
                 .set(object)
+                .unset(unsetFields)
                 .commit()
                 .then((t) => (numberOfSuccesses += 1))
                 .catch((e) => {
@@ -105,8 +107,9 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
             const thing = {
                 [heading[index]]: isJsonString(myValue)
                     ?  JSON.parse(myValue)
-                    : myValue ? String(myValue): null,
+                    : myValue ? String(myValue): getEmptyValueFor(''),
             };
+            console.log('thing', thing)
             return thing;
         }
     }

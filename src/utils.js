@@ -127,5 +127,5 @@ export function isJsonString(str) {
 }
 
 export function getEmptyValueFor(type){
-    return ACCEPTED_TYPES.find(x => x.name === type)?.empty || ''
+    return null
 }
