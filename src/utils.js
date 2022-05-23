@@ -4,6 +4,7 @@ import {
     ACCEPTED_TYPES,
     CSV_TOOLS_DELIMETER,
 } from "./constants.js";
+import schemas from "part:@sanity/base/schema";
 
 //
 // Taken from stackOverflow
@@ -35,6 +36,23 @@ export function schemeNames(schemas) {
     return schemas._original.types
         .filter((item) => item.type === "document")
         .map((item) => item.name);
+}
+
+export function fieldsOfParticularSchema(type) {
+    return schemas._original.types
+        .filter((item) => item.name === type)[0]
+        .fields.map((x) => ({ name: x.name, type: x.type }));
+}
+
+export function transformMe(value, dataType) {
+    switch (dataType) {
+        case "number":
+            return Number(value);
+        case "boolean":
+            return !!value;
+        default:
+            return value;
+    }
 }
 
 function headingsSorted(metaTypes, fields, allFields) {
@@ -120,12 +138,12 @@ export function makeClipboardCompatible(data) {
 export function isJsonString(str) {
     try {
         var val = JSON.parse(str);
-        return typeof val !== 'number' ? true : false;
+        return typeof val !== "number" ? true : false;
     } catch (e) {
         return false;
     }
 }
 
-export function getEmptyValueFor(type){
-    return null
+export function getEmptyValueFor(type) {
+    return null;
 }

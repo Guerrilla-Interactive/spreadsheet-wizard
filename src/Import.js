@@ -10,6 +10,8 @@ import {
     fieldsAndDataProcessed,
     isJsonString,
     getEmptyValueFor,
+    fieldsOfParticularSchema,
+    transformMe,
 } from "./utils.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
@@ -43,14 +45,28 @@ async function uploadToSanity(
     setSuccess
 ) {
     const size = 10;
-    for (let i = 0; i < arrayOfObjects.length - size; i += size) {
+    if (arrayOfObjects.length < size) {
         await uploadToSanityBackEnd(
-            arrayOfObjects.slice(i, i + size),
+            arrayOfObjects,
             setProcessing,
             setError,
             setSuccess
         );
-        await new Promise((r) => setTimeout(r, 5000));
+    } else {
+        for (let i = 0; i <= arrayOfObjects.length - size; i += size) {
+            await uploadToSanityBackEnd(
+                arrayOfObjects.slice(i, i + size),
+                setProcessing,
+                setError,
+                setSuccess
+            );
+            if (i + 1 < arrayOfObjects.length - size)
+                setProcessing(
+                    "waiting for 5 sec before trying next batch to avoid sanity api limit"
+                );
+            await new Promise((r) => setTimeout(r, 5000));
+            setProcessing("");
+        }
     }
 }
 
@@ -63,7 +79,6 @@ function uploadToSanityBackEnd(
     // Remove empty lines & objects without ids
     // arrayOfObjects = arrayOfObjects.filter((item) => !!item._id);
     setProcessing("...uploading...");
-    let numberOfSuccesses = 0;
     setSuccess("");
     setError("");
     return Promise.all(
@@ -76,13 +91,30 @@ function uploadToSanityBackEnd(
                 .set(object)
                 .unset(unsetFields)
                 .commit()
-                .then((t) => (numberOfSuccesses += 1))
+                .then((t) => {
+                    numberOfSuccesses++;
+                    console.log("success", object._id);
+                })
                 .catch((e) => {
                     // If ID is specified, and got document not found
                     if (object._id) {
+                        const objectWithoutEmptyValues = Object.keys(
+                            object
+                        ).reduce(
+                            (prev, curr) =>
+                                object[curr] === getEmptyValueFor("")
+                                    ? prev
+                                    : { ...prev, [curr]: object[curr] },
+                            {}
+                        );
                         client
-                            .createIfNotExists(object)
-                            .then((t) => (numberOfSuccesses += 1))
+                            .createIfNotExists(objectWithoutEmptyValues)
+                            .then((t) => {
+                                console.log(
+                                    "success",
+                                    objectWithoutEmptyValues._id
+                                );
+                            })
                             .catch((e) => {
                                 console.log(
                                     "if you are trying to create new docs by specifying ids manually, make sure you are providing type as well"
@@ -90,20 +122,17 @@ function uploadToSanityBackEnd(
                                 console.log(e);
                             });
                     } else {
-                        console.log(
-                            "id not provided for the documenet",
-                            object
-                        );
+                        console.log("error:", object);
                     }
                 });
         })
     )
         .then((msg) => {
             setSuccess(
-                `${numberOfSuccesses} docs added/modified! ${
-                    arrayOfObjects.length > numberOfSuccesses
+                `${msg.length} docs added/modified! ${
+                    arrayOfObjects.length > msg.length
                         ? " Failed" +
-                          (arrayOfObjects.length - numberOfSuccesses) +
+                          (arrayOfObjects.length - msg.length) +
                           " modifications, check console"
                         : ""
                 }`
@@ -117,6 +146,24 @@ function uploadToSanityBackEnd(
             console.log(arrayOfObjects);
             setProcessing("");
         });
+}
+
+function transformToProperType(record) {
+    const recordType = record._type;
+    const recordTypes = fieldsOfParticularSchema(recordType);
+    return Object.keys(record).reduce((prev, curr) => {
+        /// ignore metatypes
+        if (curr[0] === "_") {
+            return { ...prev, [curr]: record[curr] };
+        }
+        return {
+            ...prev,
+            [curr]: transformMe(
+                record[curr], // my value
+                recordTypes.find((x) => x.name === curr).type // my type on this document
+            ),
+        };
+    }, {});
 }
 
 function processCSVLines(linesOfStrings, onSuccess, onFail) {
@@ -143,7 +190,7 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
             return thing;
         }
     }
-    // Check if heading contains ID
+    // Check if heading contains ID and TYPE
     if (heading.includes("_id")) {
         onSuccess(
             linesOfStrings
@@ -158,7 +205,9 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                         {}
                     );
                 })
-                .filter((item) => !!item._id) // only take those rows with _id
+                .filter((item) => !!item._id)
+                .filter((x) => !!x._type)
+                .map(transformToProperType) // only take those rows with _id
         );
     } else {
         onFail("_id not provided!");
@@ -217,6 +266,7 @@ const ImportForm = () => {
     }
 
     async function handlePaste() {
+        setError("");
         const text = await navigator.clipboard
             .readText()
             .then((data) => data?.split("\n"));
@@ -232,6 +282,7 @@ const ImportForm = () => {
         }
     }
     function handleUpload(e) {
+        setError("");
         // handleUpload
         if (rawData) {
             uploadToSanity(rawData, setProcessing, setError, setSuccess);

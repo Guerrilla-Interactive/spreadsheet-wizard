@@ -121,9 +121,9 @@ export const DataTable = ({ data }) => {
                     autoFlow="row dense"
                     style={{ display: "grid", gap: "1px" }}
                 >
-                    {data.slice(1).map((row, index) => (
+                    {data.slice(1).map((row, indexRow) => (
                         <Grid
-                            key={index}
+                            key={indexRow}
                             style={{ justifyContent: "start", gap: "1px" }}
                             autoFlow="column dense"
                         >
@@ -138,7 +138,12 @@ export const DataTable = ({ data }) => {
                                         background: "#ffffff",
                                         whiteSpace: "nowrap",
                                     }}
-                                    key={"" + item + index}
+                                    key={
+                                        item +
+                                        index +
+                                        JSON.stringify(row[index], null, 2) +
+                                        indexRow
+                                    }
                                 >
                                     <div
                                         style={{
