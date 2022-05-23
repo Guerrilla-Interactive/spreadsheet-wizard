@@ -6,7 +6,11 @@ import {
     ACCEPTED_TYPES,
     SANITY_META_TYPES,
 } from "./constants.js";
-import { fieldsAndDataProcessed, isJsonString, getEmptyValueFor } from "./utils.js";
+import {
+    fieldsAndDataProcessed,
+    isJsonString,
+    getEmptyValueFor,
+} from "./utils.js";
 import Layout from "./Layout.js";
 import { client } from "./CSVTools.js";
 import { Heading, Stack, Select, Button } from "@sanity/ui";
@@ -32,7 +36,30 @@ const Import = ({ handleScreenChange }) => {
     );
 };
 
-function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
+async function uploadToSanity(
+    arrayOfObjects,
+    setProcessing,
+    setError,
+    setSuccess
+) {
+    const size = 10;
+    for (let i = 0; i < arrayOfObjects.length - size; i += size) {
+        await uploadToSanityBackEnd(
+            arrayOfObjects.slice(i, i + size),
+            setProcessing,
+            setError,
+            setSuccess
+        );
+        await new Promise((r) => setTimeout(r, 5000));
+    }
+}
+
+function uploadToSanityBackEnd(
+    arrayOfObjects,
+    setProcessing,
+    setError,
+    setSuccess
+) {
     // Remove empty lines & objects without ids
     // arrayOfObjects = arrayOfObjects.filter((item) => !!item._id);
     setProcessing("...uploading...");
@@ -41,7 +68,9 @@ function uploadToSanity(arrayOfObjects, setProcessing, setError, setSuccess) {
     setError("");
     return Promise.all(
         arrayOfObjects.map((object) => {
-            const unsetFields = Object.keys(object).filter(key => object[key] === getEmptyValueFor(''))
+            const unsetFields = Object.keys(object).filter(
+                (key) => object[key] === getEmptyValueFor("")
+            );
             return client
                 .patch(object._id)
                 .set(object)
@@ -102,30 +131,34 @@ function processCSVLines(linesOfStrings, onSuccess, onFail) {
                 ...thing.structure,
                 [thing.structure.value.name]: myValue,
             };
-            return { [thing.name]: other};
+            return { [thing.name]: other };
         } else {
             const thing = {
                 [heading[index]]: isJsonString(myValue)
-                    ?  JSON.parse(myValue)
-                    : myValue ? String(myValue): getEmptyValueFor(''),
+                    ? JSON.parse(myValue)
+                    : myValue
+                    ? String(myValue)
+                    : getEmptyValueFor(""),
             };
-            console.log('thing', thing)
             return thing;
         }
     }
     // Check if heading contains ID
     if (heading.includes("_id")) {
         onSuccess(
-            linesOfStrings.slice(1).map((item) => {
-                const thing = item.split(CSV_TOOLS_DELIMETER);
-                return thing.reduce(
-                    (prev, current, index) => ({
-                        ...prev,
-                        ...makeObject(index, current),
-                    }),
-                    {}
-                );
-            }).filter(item => !!item._id) // only take those rows with _id
+            linesOfStrings
+                .slice(1)
+                .map((item) => {
+                    const thing = item.split(CSV_TOOLS_DELIMETER);
+                    return thing.reduce(
+                        (prev, current, index) => ({
+                            ...prev,
+                            ...makeObject(index, current),
+                        }),
+                        {}
+                    );
+                })
+                .filter((item) => !!item._id) // only take those rows with _id
         );
     } else {
         onFail("_id not provided!");
@@ -191,9 +224,8 @@ const ImportForm = () => {
             processCSVLines(
                 text,
                 (data) => {
-                    console.log('datain pate', data)
-                    setMyData(processAndSetMyData(data))
-                    setRawData(data)
+                    setMyData(processAndSetMyData(data));
+                    setRawData(data);
                 },
                 setError
             );
@@ -202,8 +234,7 @@ const ImportForm = () => {
     function handleUpload(e) {
         // handleUpload
         if (rawData) {
-            console.log(rawData);
-            uploadToSanity(rawData, setProcessing, setError, setSuccess)
+            uploadToSanity(rawData, setProcessing, setError, setSuccess);
         } else {
             setError("No Data");
         }
