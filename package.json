@@ -1,6 +1,6 @@
 {
     "name": "sanity-plugin-spreadsheet-wizard-x",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "Spreadsheet Wizard is a magnificient Sanity plugin that help you EXPORT & IMPORT spreadsheets. A fantastic bridge between Sanity & your spreadsheet software of choice. (Google Sheets... Excel... Numbers etc.)",
     "main": "lib/index.js",
     "scripts": {
