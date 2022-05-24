@@ -62,9 +62,9 @@ async function uploadToSanity(
             );
             if (i + 1 < arrayOfObjects.length - size)
                 setProcessing(
-                    "waiting for 5 sec before trying next batch to avoid sanity api limit"
+                    "waiting for .5 sec before trying next batch to avoid sanity api limit"
                 );
-            await new Promise((r) => setTimeout(r, 5000));
+            await new Promise((r) => setTimeout(r, 500));
             setProcessing("");
         }
     }
