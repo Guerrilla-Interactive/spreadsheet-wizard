@@ -1,13 +1,20 @@
+import config from "config:spreadsheet-wizard-x";
+
 export const ACCEPTED_TYPES = [
     { name: "string" },
     { name: "number" },
-    { name: "boolean", empty: ''},
+    { name: "boolean", empty: "" },
     { name: "date" },
-    { name: "datetime"},
-    { name: "text" , isJson: true, empty: ''},
-    { name: "array", isJson: true, empty: []},
-    { name: "image", isJson: true, empty: {}},
-    { name: "slug", query: "current", structure: {type: '_slug', value: {name: 'current'}}},
+    { name: "datetime" },
+    { name: "text", isJson: true, empty: "" },
+    { name: "array", isJson: true, empty: [] },
+    { name: "image", isJson: true, empty: {} },
+    {
+        name: "slug",
+        query: "current",
+        structure: { type: "_slug", value: { name: "current" } },
+    },
+    ...(config?.ACCEPTED_TYPES || []),
 ];
 
 export const SANITY_META_TYPES = [
