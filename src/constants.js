@@ -1,4 +1,4 @@
-import config from "config:spreadsheet-wizard-x";
+import config from "config:spreadsheet-wizard";
 
 export const ACCEPTED_TYPES = [
     { name: "string" },
