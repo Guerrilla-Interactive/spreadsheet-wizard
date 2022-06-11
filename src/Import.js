@@ -321,7 +321,7 @@ const ImportForm = () => {
                 <Button
                     style={{ marginTop: "1.5rem", width: "100%" }}
                     icon={UploadSimple}
-                    text="Pate from clipboard"
+                    text="Paste from clipboard"
                     tone="positive"
                     mode="ghost"
                     onClick={handlePaste}
